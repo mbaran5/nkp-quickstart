@@ -60,6 +60,10 @@ tui_prepare_sudo() {
 
     command -v sudo >/dev/null 2>&1 || return 1
 
+    # 'sudo -v' prompts if any matching sudoers entry (e.g. %wheel) needs a
+    # password, even when NOPASSWD:ALL also applies.  Plain sudo does not.
+    sudo -n true 2>/dev/null && return 0
+
     if [[ -c /dev/tty ]]; then
         TTY_STATE=$(stty -g < /dev/tty) || return 1
         # The framed renderer intentionally hides the cursor and disables
